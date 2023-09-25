@@ -12,6 +12,8 @@ namespace blogpessoal.Service
 
         Task<Postagem?>Create(Postagem postagem);
 
+        Task<Postagem?> Update(Postagem postagem);
+
         Task Delete(Postagem postagem);
     }
 }

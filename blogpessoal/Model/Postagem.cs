@@ -5,7 +5,7 @@ namespace blogpessoal.Model
 {
     public class Postagem : Auditable
     {
-        [Key]
+        [Key] // Primary Key (Id)
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // IDENTITY (1,1)
         public long Id { get; set; }
 
