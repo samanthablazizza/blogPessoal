@@ -56,9 +56,16 @@ namespace blogpessoal.Controllers
             }
 
             await _postagemService.Create(postagem);
+            var Resposta = await _postagemService.Create(postagem);
+
+            if(Resposta is null)
+            {
+                return BadRequest("Tema não encontrado!");
+            }
 
             return CreatedAtAction (nameof(GetById), new { id = postagem.Id }, postagem);
         }
+
         [HttpPut]
         public async Task<ActionResult> Update([FromBody] Postagem postagem)
         {
@@ -78,7 +85,7 @@ namespace blogpessoal.Controllers
 
             if (Resposta is null)
             {
-                return NotFound("Postagem não encontrada!");
+                return NotFound("Postagem e/ou Tema não encontrado!");
             }
             return Ok(Resposta);
         }

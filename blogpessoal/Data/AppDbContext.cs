@@ -11,12 +11,20 @@ namespace blogpessoal.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Postagem>().ToTable("tb_postagens");
+            modelBuilder.Entity<Tema>().ToTable("tb_temas");
+
+            //Relacionamento Postagem -> Tema
+            _ = modelBuilder.Entity<Postagem>()
+          .HasOne(_ => _.Tema)   // lado um da relação: Tema classifica muitas postagens
+          .WithMany(t => t.Postagem)   //lado muitos da relação: um tema pode ter muitas Postagens
+          .HasForeignKey("TemaId")   // Chave Estrangeira na tabela tb_postagens.
+          .OnDelete(DeleteBehavior.Cascade);
         }
 
         //Registrar DbSet - Objeto responsável por manipular a Tabela
-
         public DbSet<Postagem> Postagens { get; set; } = null!;
 
+        public DbSet<Tema> Temas { get; set; } = null!;
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var insertedEntries = this.ChangeTracker.Entries()
@@ -46,6 +54,5 @@ namespace blogpessoal.Data
 
             return base.SaveChangesAsync(cancellationToken);
         }
-    }
-    
+    }    
 }
