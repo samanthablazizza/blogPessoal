@@ -48,14 +48,14 @@ namespace blogpessoal.Service.Implements
                 var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
                 if (BuscaTema is not null)
                     return null;
-
-                postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
-
-                await _context.Postagens.AddAsync(postagem);
-                await _context.SaveChangesAsync();
-
-                return postagem;
             }
+            postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
+
+            await _context.Postagens.AddAsync(postagem);
+            await _context.SaveChangesAsync();
+
+            return postagem;
+        }            
             public async Task<Postagem?> Update(Postagem postagem)
             {
                 var PostagemUpdate = await _context.Postagens.FindAsync(postagem.Id);
@@ -65,7 +65,6 @@ namespace blogpessoal.Service.Implements
                     return null;
                 }
                
-
                 if (postagem.Tema is not null)
                 {
                     var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
@@ -86,7 +85,8 @@ namespace blogpessoal.Service.Implements
                 _context.Remove(postagem);
                 await _context.SaveChangesAsync();
             }
-        }
-        
     }
+        
 }
+
+

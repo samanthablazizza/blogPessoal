@@ -1,12 +1,12 @@
 ﻿using blogpessoal.Model;
 using blogpessoal.Service;
 using blogpessoal.Service.Implements;
+using blogpessoal.Validator;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 namespace blogpessoal.Controllers
 {
-
         [Route("~/temas")]
         [ApiController]
         public class TemaController : ControllerBase
@@ -30,14 +30,14 @@ namespace blogpessoal.Controllers
             [HttpGet("{id}")]
             public async Task<ActionResult> GetById(long id)
             {
-                var Resposta = await _temaService.GetById(id);
+            var Resposta = await _temaService.GetById(id);
 
                 if (Resposta is null)
                 {
                     return NotFound();
-                }
+                }return Ok(Resposta);
 
-                return Ok(Resposta);
+            
             }
 
             [HttpGet("descricao/{descricao}")]

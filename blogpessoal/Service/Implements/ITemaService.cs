@@ -1,6 +1,6 @@
 ﻿using blogpessoal.Model;
 
-namespace blogpessoal.Service.Implements
+namespace blogpessoal.Service
 {
     public interface ITemaService
     {
