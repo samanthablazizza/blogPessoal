@@ -37,19 +37,26 @@ namespace blogpessoal.Service.Implements
         {
             var Postagem = await _context.Postagens
                                  .Include(p => p.Tema)
+                                 .Include(p => p.Usuario)
                                  .Where(p => p.Titulo.Contains(titulo))
                                  .ToListAsync();
             return Postagem;
         }
         public async Task<Postagem?> Create(Postagem postagem)
         {
-            if (postagem is not null)
+            if (postagem.Tema is not null)
             {
                 var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
-                if (BuscaTema is not null)
+
+                if (BuscaTema is null)
+                {
                     return null;
+                }
+
+                postagem.Tema = BuscaTema;
             }
-            postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
+
+            postagem.Usuario = postagem.Usuario is not null ? await _context.Users.FirstOrDefaultAsync(u => u.Id == postagem.Usuario.Id) : null;
 
             await _context.Postagens.AddAsync(postagem);
             await _context.SaveChangesAsync();

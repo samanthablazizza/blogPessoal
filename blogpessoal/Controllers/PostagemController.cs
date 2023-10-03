@@ -2,30 +2,30 @@
 using blogpessoal.Model;
 using blogpessoal.Service;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Diagnostics.CodeAnalysis;
 
 namespace blogpessoal.Controllers
 {
-    [Route("~/postagens")]
-    [ApiController]
-    public class PostagemController : ControllerBase
+    [Authorize]
+    [Route("~/postagens")] //rota padrão das requisições
+    [ApiController] //Controller: controlar o fluxo da aplicação
+    public class PostagemController : ControllerBase 
     {
         private readonly IPostagemService _postagemService;
         private readonly IValidator<Postagem> _postagemValidator;
 
-        public PostagemController(
-            IPostagemService postagemService, 
-            IValidator<Postagem> postagemValidator)
+        public PostagemController(IPostagemService postagemService, IValidator<Postagem> postagemValidator)
         {
-            _postagemService = postagemService;
+            _postagemService = postagemService; //aqui é como se o _postagemService fosse o this.postagemService que recebe o postagemService
             _postagemValidator = postagemValidator;
         }
-        [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [HttpGet] //rota de busca de informações
+        public async Task<ActionResult> GetAll() //async é a chave que permite que o await seja usado
         {
-            return Ok(await _postagemService.GetAll());
+            return Ok(await _postagemService.GetAll()); //await espera que a ação seja finalizada
         }
 
         [HttpGet("{id}")]
@@ -33,8 +33,10 @@ namespace blogpessoal.Controllers
         {
             var Resposta = await _postagemService.GetById(id);
 
-            if (Resposta is null)
-                return NotFound();
+            if (Resposta is null) //se resposta for nula
+            {
+                return NotFound("Postagem não Encontrada!");
+            }
 
             return Ok(Resposta);
         }
@@ -48,9 +50,9 @@ namespace blogpessoal.Controllers
         [HttpPost]
         public async Task<ActionResult> Create ([FromBody] Postagem postagem)
         {
-            var validarPostagem = await _postagemValidator.ValidateAsync(postagem);
+            var validarPostagem = await _postagemValidator.ValidateAsync(postagem); //verifica as validações que especificamos
 
-            if (!validarPostagem.IsValid)
+            if (!validarPostagem.IsValid) //validações inválidas
             {
                 return StatusCode(StatusCodes.Status400BadRequest, validarPostagem);
             }

@@ -1,11 +1,17 @@
 
 using blogpessoal.Data;
 using blogpessoal.Model;
+using blogpessoal.Security.Implements;
+using blogpessoal.Security;
 using blogpessoal.Service;
 using blogpessoal.Service.Implements;
 using blogpessoal.Validator;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace blogpessoal
 {
@@ -35,13 +41,34 @@ namespace blogpessoal
             //Registrar a Validação das Entidades
 
             builder.Services.AddTransient<IValidator<Postagem>, PostagemValidator>();
-
             builder.Services.AddTransient<IValidator<Tema>, TemaValidator>();
+            builder.Services.AddTransient<IValidator<User>, UserValidator>();
 
             //Registrar as Classes e Interfaces de Serviço (Service)
 
             builder.Services.AddScoped<IPostagemService, PostagemService>();
             builder.Services.AddScoped<ITemaService, TemaService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddTransient<IAuthService, AuthService>();
+
+            //Validação do Token
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                var Key = Encoding.UTF8.GetBytes(Settings.Secret);
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Key)
+                };
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -78,10 +105,14 @@ namespace blogpessoal
 
             //Inicializa o CORS
             app.UseCors("MyPolicy");
+
+            //Habilitar a Autenticação e a Autorização
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
-
-            app.MapControllers();
+            //Habilitar Controller
+            app.MapControllers(); 
 
             app.Run();
         }
