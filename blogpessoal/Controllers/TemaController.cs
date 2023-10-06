@@ -38,7 +38,6 @@ namespace blogpessoal.Controllers
                 {
                     return NotFound();
                 }return Ok(Resposta);
-
             
             }
 

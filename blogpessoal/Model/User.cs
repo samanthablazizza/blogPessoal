@@ -18,7 +18,7 @@ namespace blogpessoal.Model
         public string Usuario { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar")]
-        [StringLength(255)]
+        [StringLength(8)]
         public string Senha { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar")]
