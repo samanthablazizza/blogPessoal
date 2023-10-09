@@ -56,8 +56,7 @@ namespace blogpessoal.Controllers
             {
                 return StatusCode(StatusCodes.Status400BadRequest, validarPostagem);
             }
-
-            await _postagemService.Create(postagem);
+            
             var Resposta = await _postagemService.Create(postagem);
 
             if(Resposta is null)

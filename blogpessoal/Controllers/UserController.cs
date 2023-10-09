@@ -64,7 +64,7 @@ namespace blogpessoal.Controllers
                 return BadRequest("Usuário já cadastrado!");
                 }
 
-            return CreatedAtAction(nameof(GetById), new { id = Resposta.Id }, Resposta);
+            return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
         }
 
         [Authorize]

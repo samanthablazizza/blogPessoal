@@ -18,13 +18,14 @@ namespace blogpessoal.Model
         public string Usuario { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar")]
-        [StringLength(8)]
+        [StringLength(255)]
         public string Senha { get; set; } = string.Empty;
 
         [Column(TypeName = "varchar")]
         [StringLength(5000)]
         public string? Foto { get; set; } = string.Empty;
 
+        [InverseProperty("Usuario")]
         public virtual ICollection<Postagem>? Postagem { get; set; }
 
      

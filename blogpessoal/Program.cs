@@ -15,6 +15,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using blogpessoal.Configuration;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using System.Diagnostics.Eventing.Reader;
 
 namespace blogpessoal
 {
@@ -30,11 +32,13 @@ namespace blogpessoal
                .AddNewtonsoftJson(options =>
                {
                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                   options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
                });
 
             //Conexão com o Banco de Dados
-            if (builder.Configuration["Enviroment: Start"] == "PROD")
+            if (builder.Configuration["Enviroment:Start"] == "PROD")
             {
+                /* Conexão Remota (Nuvem) - PostgreSQL */
                 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("secrets.json");
 
                 var connectionString = builder.Configuration
@@ -55,14 +59,7 @@ namespace blogpessoal
                 builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString)
                 );
-            }
-        
-            var connectionString = builder.Configuration
-                .GetConnectionString("DefaultConnection");
-
-            builder.Services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connectionString)
-            );
+            }  
 
             //Registrar a Validação das Entidades
 
@@ -75,7 +72,7 @@ namespace blogpessoal
             builder.Services.AddScoped<IPostagemService, PostagemService>();
             builder.Services.AddScoped<ITemaService, TemaService>();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddTransient<IAuthService, AuthService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             //Validação do Token
             builder.Services.AddAuthentication(options =>
@@ -164,9 +161,9 @@ namespace blogpessoal
                 //if (app.Environment.IsDevelopment())
                //{
                     app.UseSwagger();
-                    app.UseSwaggerUI();
-                //}
-            
+
+            //}
+
             if (app.Environment.IsProduction())
             {
                 app.UseSwaggerUI(options =>
@@ -176,6 +173,11 @@ namespace blogpessoal
 
                 });
             }
+            else
+            {
+                app.UseSwaggerUI();
+            }
+            
             //Inicializa o CORS
             app.UseCors("MyPolicy");
 

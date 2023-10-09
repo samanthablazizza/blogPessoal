@@ -66,7 +66,7 @@ namespace blogpessoal.Service.Implements
 
                 usuario.Senha = BCrypt.Net.BCrypt.HashPassword(usuario.Senha, workFactor: 10);
 
-                _context.Users.Add(usuario);
+                await _context.Users.AddAsync(usuario);
                 await _context.SaveChangesAsync();
 
                 return usuario;

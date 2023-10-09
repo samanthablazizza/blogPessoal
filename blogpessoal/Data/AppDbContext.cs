@@ -26,7 +26,7 @@ namespace blogpessoal.Data
             _ = modelBuilder.Entity<Postagem>()
            .HasOne(_ => _.Usuario)
            .WithMany(u => u.Postagem)
-           .HasForeignKey("UserId")
+           .HasForeignKey("UsuarioId")
            .OnDelete(DeleteBehavior.Cascade);
         }
 
@@ -47,7 +47,7 @@ namespace blogpessoal.Data
                 //Se uma propriedade da Classe Auditable estiver sendo criada. 
                 if (insertedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data =  new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
+                    auditableEntity.Data =  new DateTimeOffset(DateTime.Now);
                 }
             }
             var modifiedEntries = ChangeTracker.Entries()
@@ -59,7 +59,7 @@ namespace blogpessoal.Data
                 //Se uma propriedade da Classe Auditable estiver sendo atualizada.  
                 if (modifiedEntry is Auditable auditableEntity)
                 {
-                    auditableEntity.Data = new DateTimeOffset(DateTime.Now, new TimeSpan(-3, 0, 0));
+                    auditableEntity.Data = new DateTimeOffset(DateTime.Now);
                 }
             }
 
