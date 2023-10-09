@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace blogpessoal.Service.Implements
 {
     public class UserService : IUserService
-        {
+    {
         public readonly AppDbContext _context;
         public UserService(AppDbContext context)
         {

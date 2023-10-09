@@ -36,8 +36,10 @@ namespace blogpessoal.Controllers
 
                 if (Resposta is null)
                 {
-                    return NotFound();
-                }return Ok(Resposta);
+                    return NotFound("Tema não encontrado!");
+                }
+            
+                return Ok(Resposta);
             
             }
 
@@ -57,9 +59,9 @@ namespace blogpessoal.Controllers
                     return StatusCode(StatusCodes.Status400BadRequest, validarTema);
                 }
 
-                await _temaService.Create(tema);
+                var Resposta = await _temaService.Create(tema);
 
-                return CreatedAtAction(nameof(GetById), new { id = tema.Id }, tema);
+                return CreatedAtAction(nameof(GetById), new { id = Resposta.Id }, Resposta);
             }
             [HttpPut]
             public async Task<ActionResult> Update([FromBody] Tema tema)
@@ -92,7 +94,7 @@ namespace blogpessoal.Controllers
 
                 if (BuscaTema is null)
                 {
-                    return NotFound("Tema não foi encontrado!");
+                    return NotFound("Tema não encontrado!");
                 }
 
                 await _temaService.Delete(BuscaTema);

@@ -24,7 +24,8 @@ namespace blogpessoal.Configuration
                                         Id = "JWT"
                                     }
 
-                                }, Array.Empty<string>()
+                                }, 
+                                Array.Empty<string>()
 
                             }
 

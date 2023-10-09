@@ -24,6 +24,7 @@ namespace blogpessoal.Security.Implements
             {
                 return null;
             }
+            // usuarioLogin = email
 
             var BuscaUsuario = await _userService.GetByUsuario(userLogin.Usuario);
 
@@ -36,9 +37,13 @@ namespace blogpessoal.Security.Implements
             {
                 return null;
             }
-
+            //manipula o token
             var tokenHandler = new JwtSecurityTokenHandler();
+
+            //codifica a senha
             var tokenKey = Encoding.UTF8.GetBytes(Settings.Secret);
+
+            //armazena as informações necessárias
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -54,7 +59,7 @@ namespace blogpessoal.Security.Implements
             userLogin.Nome = BuscaUsuario.Nome;
             userLogin.Foto = BuscaUsuario.Foto is null ? FotoDefault : BuscaUsuario.Foto;
             userLogin.Token = "Bearer " + tokenHandler.WriteToken(token).ToString();
-            userLogin.Senha = string.Empty;
+            userLogin.Senha = "";
 
             return userLogin;
 

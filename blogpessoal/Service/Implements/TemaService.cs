@@ -62,11 +62,12 @@ namespace blogpessoal.Service.Implements
             _context.Entry(TemaUpdate).State = EntityState.Detached;
             _context.Entry(tema).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+
             return tema;
         }
         public async Task Delete(Tema tema)
         {
-            _context.Remove(tema);
+            _context.Temas.Remove(tema);
             await _context.SaveChangesAsync();
         }
     }

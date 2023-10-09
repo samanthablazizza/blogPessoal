@@ -1,13 +1,13 @@
 ﻿using blogpessoal.Data;
 using blogpessoal.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace blogpessoal.Service.Implements
 {
     public class PostagemService : IPostagemService
     {
         private readonly AppDbContext _context;
-
         public PostagemService(AppDbContext context)
         {
             _context = context;
@@ -16,6 +16,7 @@ namespace blogpessoal.Service.Implements
         {
             return await _context.Postagens
                         .Include(p => p.Tema)
+                        .Include(p => p.Usuario)
                         .ToListAsync();
         }
         public async Task<Postagem?> GetById(long id)
@@ -24,6 +25,7 @@ namespace blogpessoal.Service.Implements
             {
                 var Postagem = await _context.Postagens
                                     .Include(p => p.Tema)
+                                    .Include(p => p.Usuario)
                                     .FirstAsync(i => i.Id == id);
 
                 return Postagem;
@@ -53,8 +55,9 @@ namespace blogpessoal.Service.Implements
                     return null;
                 }
 
-                postagem.Tema = BuscaTema;
+                //postagem.Tema = BuscaTema;
             }
+            postagem.Tema = postagem.Tema is not null ? _context.Temas.FirstOrDefault(t => t.Id == postagem.Tema.Id) : null;
 
             postagem.Usuario = postagem.Usuario is not null ? await _context.Users.FirstOrDefaultAsync(u => u.Id == postagem.Usuario.Id) : null;
 
@@ -76,7 +79,7 @@ namespace blogpessoal.Service.Implements
                 {
                     var BuscaTema = await _context.Temas.FindAsync(postagem.Tema.Id);
 
-                    if (BuscaTema is not null)
+                    if (BuscaTema is null)
                         return null;
                 }
 
@@ -85,11 +88,12 @@ namespace blogpessoal.Service.Implements
                 _context.Entry(PostagemUpdate).State = EntityState.Detached;
                 _context.Entry(postagem).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
                 return postagem;
             }
             public async Task Delete(Postagem postagem)
             {
-                _context.Remove(postagem);
+                _context.Postagens.Remove(postagem);
                 await _context.SaveChangesAsync();
             }
     }

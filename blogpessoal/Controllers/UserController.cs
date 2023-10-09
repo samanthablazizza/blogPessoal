@@ -64,7 +64,7 @@ namespace blogpessoal.Controllers
                 return BadRequest("Usuário já cadastrado!");
                 }
 
-            return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
+            return CreatedAtAction(nameof(GetById), new { id = Resposta.Id }, Resposta);
         }
 
         [Authorize]
@@ -83,7 +83,7 @@ namespace blogpessoal.Controllers
             
             var UserUpdate = await _userService.GetByUsuario(usuario.Usuario);
 
-                if ((UserUpdate is not null) && (UserUpdate.Id != usuario.Id))
+                if (UserUpdate is not null && UserUpdate.Id != usuario.Id)
                 {
                 return BadRequest("O Usuário (e-mail) já está em uso por outro usuário.");
                 }

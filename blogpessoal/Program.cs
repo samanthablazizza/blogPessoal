@@ -36,10 +36,12 @@ namespace blogpessoal
                });
 
             //Conexão com o Banco de Dados
-            if (builder.Configuration["Enviroment:Start"] == "PROD")
+            if (builder.Configuration["Environment:Start"] == "PROD")
             {
                 /* Conexão Remota (Nuvem) - PostgreSQL */
-                builder.Configuration.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("secrets.json");
+                builder.Configuration
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("secrets.json");
 
                 var connectionString = builder.Configuration
                     .GetConnectionString("ProdConnection");
@@ -53,8 +55,8 @@ namespace blogpessoal
             {
                 /* Conexão Local - SQL Server */
 
-                var connectionString = builder.Configuration.
-                    GetConnectionString("DefaultConnection");
+                var connectionString = builder.Configuration
+                    .GetConnectionString("DefaultConnection");
 
                 builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(connectionString)
@@ -100,7 +102,7 @@ namespace blogpessoal
             builder.Services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
-                {
+                {   //Personalizar a Página inicial do Swagger
                     Version = "v1",
                     Title = "Projeto Blog Pessoal",
                     Description = "Projeto Blog Pessoal - ASP.NET Core 7.0",
@@ -142,8 +144,8 @@ namespace blogpessoal
                     policy =>
                     {
                         policy.AllowAnyOrigin()
-                                .AllowAnyMethod()
-                                .AllowAnyHeader();
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
                     });
             });
 
@@ -164,6 +166,7 @@ namespace blogpessoal
 
             //}
 
+            //Swagger como página inicial na Nuvem
             if (app.Environment.IsProduction())
             {
                 app.UseSwaggerUI(options =>
