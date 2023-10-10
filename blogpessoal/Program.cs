@@ -11,12 +11,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using blogpessoal.Configuration;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using System.Diagnostics.Eventing.Reader;
 
 namespace blogpessoal
 {
@@ -36,7 +33,7 @@ namespace blogpessoal
                });
 
             //Conexão com o Banco de Dados
-            if (builder.Configuration["Environment:Start"] == "PROD")
+            if (builder.Configuration["Enviroment:Start"] == "PROD")
             {
                 /* Conexão Remota (Nuvem) - PostgreSQL */
                 builder.Configuration
